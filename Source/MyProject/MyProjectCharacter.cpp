@@ -14,6 +14,9 @@
 
 AMyProjectCharacter::AMyProjectCharacter()
 {
+
+	ZoomLength = 300.0f;
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -35,7 +38,7 @@ AMyProjectCharacter::AMyProjectCharacter()
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 300.0f; // The camera follows at this distance behind the character	
+	CameraBoom->TargetArmLength = ZoomLength; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
 	// Create a follow camera
@@ -47,6 +50,8 @@ AMyProjectCharacter::AMyProjectCharacter()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
+
+ 
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -54,6 +59,10 @@ void AMyProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
+	//added by me 
+	PlayerInputComponent->BindAction("ZoomIn", IE_Pressed, this, &AMyProjectCharacter::ZoomIn);//added by me 
+	PlayerInputComponent->BindAction("ZoomOut", IE_Pressed, this, &AMyProjectCharacter::ZoomOut);//added by me 
+
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
@@ -131,4 +140,33 @@ void AMyProjectCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+//Added by me for camera
+void AMyProjectCharacter::ZoomIn(){
+	if (CameraBoom->TargetArmLength > 100.0f)
+	{
+		ZoomLength -= 150.0f;
+		if (ZoomLength < 300.0f)
+			ZoomLength = 300.0f;
+	
+	}
+}
+//Added by me for camera
+void AMyProjectCharacter::ZoomOut(){
+
+	if (CameraBoom->TargetArmLength < 1000.0f)
+	{
+		ZoomLength += 150.0f;
+
+		if (ZoomLength > 1000.0f)
+			ZoomLength = 1000.0f;
+	}
+	
+		
+}
+
+void AMyProjectCharacter::Tick(float Deltatime)
+{
+	Super::Tick(Deltatime);
+	this->CameraBoom->TargetArmLength = FMath::FInterpTo(this->CameraBoom->TargetArmLength, ZoomLength, Deltatime, 9.0f);
 }

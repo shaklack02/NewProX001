@@ -28,8 +28,17 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+	//Added by me for camera zoom
+	UPROPERTY(BlueprintReadWrite, Category = "Float Varibale")
+    float ZoomLength;
 
 protected:
+
+	//added by me
+	void ZoomIn();
+	void ZoomOut();
+	//called every Thick every Frame added by me 
+	void Tick(float DeltaTime) override;
 
 	/** Resets HMD orientation in VR. */
 	void OnResetVR();
@@ -68,5 +77,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+
 };
 
