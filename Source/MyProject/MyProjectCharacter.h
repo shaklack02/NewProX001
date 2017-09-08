@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
 #include "MyProjectCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -20,7 +21,16 @@ class AMyProjectCharacter : public ACharacter
 	class UCameraComponent* FollowCamera;
 public:
 	AMyProjectCharacter();
+	//---------------------------------inventory----------------------------
 
+	TArray<FString> Inventory; // here will be stored the items
+
+	bool b_IsPickingUp = false;
+
+
+
+
+	//=========================================================================
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -31,6 +41,8 @@ public:
 	//Added by me for camera zoom
 	UPROPERTY(BlueprintReadWrite, Category = "Float Varibale")
     float ZoomLength;
+
+
 
 protected:
 
@@ -67,6 +79,12 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
+	//--------------------------------inventory------------------------------
+	void BeginPick_up();
+	void EndPick_up();
+	void Show_Inventory();
+
+	//------------------------------------------------------------------------
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

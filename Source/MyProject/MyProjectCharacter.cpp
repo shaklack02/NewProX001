@@ -1,6 +1,7 @@
 // Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
 
 #include "MyProjectCharacter.h"
+#include "Engine.h"
 #include "Kismet/HeadMountedDisplayFunctionLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -8,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+
 
 //////////////////////////////////////////////////////////////////////////
 // AMyProjectCharacter
@@ -59,10 +61,20 @@ void AMyProjectCharacter::SetupPlayerInputComponent(class UInputComponent* Playe
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
+	//------------------------------------CAMERA-------------------------
 	//added by me 
 	PlayerInputComponent->BindAction("ZoomIn", IE_Pressed, this, &AMyProjectCharacter::ZoomIn);//added by me 
 	PlayerInputComponent->BindAction("ZoomOut", IE_Pressed, this, &AMyProjectCharacter::ZoomOut);//added by me 
 
+	//------------------------INVENTORY------------------------------------------
+
+	PlayerInputComponent->BindAction("Pick_up", IE_Pressed, this, &AMyProjectCharacter::BeginPick_up);
+	PlayerInputComponent->BindAction("EndPick_up", IE_Pressed, this, &AMyProjectCharacter::EndPick_up);
+	PlayerInputComponent->BindAction("Show_Inventory", IE_Pressed, this, &AMyProjectCharacter::Show_Inventory);
+
+
+
+	//----------------------------------------------------------------------------
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
@@ -146,8 +158,8 @@ void AMyProjectCharacter::ZoomIn(){
 	if (CameraBoom->TargetArmLength > 100.0f)
 	{
 		ZoomLength -= 150.0f;
-		if (ZoomLength < 300.0f)
-			ZoomLength = 300.0f;
+		if (ZoomLength < 350.0f)
+			ZoomLength = 350.0f;
 	
 	}
 }
@@ -169,4 +181,26 @@ void AMyProjectCharacter::Tick(float Deltatime)
 {
 	Super::Tick(Deltatime);
 	this->CameraBoom->TargetArmLength = FMath::FInterpTo(this->CameraBoom->TargetArmLength, ZoomLength, Deltatime, 9.0f);
+}
+
+//---------------------------------INVENTORY----------------------------
+void AMyProjectCharacter::BeginPick_up() {
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Start_pick_up!!!!!!!!"));
+
+	b_IsPickingUp = true;
+}
+
+void AMyProjectCharacter::EndPick_up() {
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("End_pick_up!"));
+
+	b_IsPickingUp =false;
+
+
+}
+void AMyProjectCharacter::Show_Inventory() {
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("This is inventory"));
+
 }
