@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-
+#include "MyActor_Test.h"
 #include "MyProjectCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -27,7 +27,12 @@ public:
 
 	bool b_IsPickingUp = false;
 
+	//Adding items to inventory
+	void AddToInventory(AMyActor_Test* actor);
 
+	//Print out the all inventory 
+	UFUNCTION(BlueprintCallable)
+		void PrintInventory();
 
 
 	//=========================================================================
@@ -41,10 +46,13 @@ public:
 	//Added by me for camera zoom
 	UPROPERTY(BlueprintReadWrite, Category = "Float Varibale")
     float ZoomLength;
-
-
+private:
+	//Inventory Array 
+	TArray<AMyActor_Test*> _inventory;
 
 protected:
+
+	
 
 	//added by me
 	void ZoomIn();
@@ -95,6 +103,7 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	
 
 
 };
